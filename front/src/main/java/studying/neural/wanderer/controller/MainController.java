@@ -1,7 +1,6 @@
 package studying.neural.wanderer.controller;
 
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
@@ -9,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import lombok.SneakyThrows;
 import studying.neural.wanderer.domain.dto.MapImageData;
+import studying.neural.wanderer.service.car.CarManager;
 import studying.neural.wanderer.service.map.MapLoader;
 
 import java.io.File;
@@ -31,13 +31,13 @@ public class MainController implements Initializable {
     @Override
     @SneakyThrows
     public void initialize(URL location, ResourceBundle resources) {
-        image.setFitWidth(pane.getCenter().getLayoutX());
-        image.setFitHeight(pane.getCenter().getLayoutY());
 
         var image = new File(getClass().getClassLoader().getResource("maps/complex.png").toURI());
         data = new MapLoader().loadFromImage(image);
+        var car = new CarManager().create(data.getMap());
         this.image.setImage(SwingFXUtils.toFXImage(data.getImage(), null));
         file.setText(image.getAbsolutePath());
+
     }
 
     @FXML
