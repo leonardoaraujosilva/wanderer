@@ -11,6 +11,7 @@
     <modules>
         <module>front</module>
         <module>back</module>
+        <module>ai</module>
     </modules>
 
     <dependencies>

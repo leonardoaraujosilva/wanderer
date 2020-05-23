@@ -1,4 +1,4 @@
-package studying.neural.wanderer.domain.model;
+package studying.neural.wanderer.components.model;
 
 import java.awt.*;
 

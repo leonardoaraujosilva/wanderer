@@ -1,9 +1,9 @@
-package studying.neural.wanderer.domain.dto;
+package studying.neural.wanderer.components.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import studying.neural.wanderer.domain.model.Map;
+import studying.neural.wanderer.components.model.Map;
 
 import java.awt.image.BufferedImage;
 

@@ -1,10 +1,10 @@
-package studying.neural.wanderer.service.map;
+package studying.neural.wanderer.tools.map;
 
-import studying.neural.wanderer.domain.dto.MapImageData;
-import studying.neural.wanderer.domain.model.Coordinates;
-import studying.neural.wanderer.domain.model.CoordinatesWeight;
-import studying.neural.wanderer.domain.model.Map;
-import studying.neural.wanderer.domain.model.TrackType;
+import studying.neural.wanderer.components.dto.MapImageData;
+import studying.neural.wanderer.components.model.Coordinates;
+import studying.neural.wanderer.components.model.CoordinatesWeight;
+import studying.neural.wanderer.components.model.Map;
+import studying.neural.wanderer.components.model.TrackType;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

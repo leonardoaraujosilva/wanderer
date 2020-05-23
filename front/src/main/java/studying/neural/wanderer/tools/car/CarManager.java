@@ -1,8 +1,8 @@
-package studying.neural.wanderer.service.car;
+package studying.neural.wanderer.tools.car;
 
-import studying.neural.wanderer.domain.model.Car;
-import studying.neural.wanderer.domain.model.Coordinates;
-import studying.neural.wanderer.domain.model.Map;
+import studying.neural.wanderer.components.model.Car;
+import studying.neural.wanderer.components.model.Coordinates;
+import studying.neural.wanderer.components.model.Map;
 
 public class CarManager {
 

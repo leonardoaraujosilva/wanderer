@@ -1,12 +1,17 @@
 package studying.neural.wanderer;
 
-import studying.neural.wanderer.domain.Coordinates;
-import studying.neural.wanderer.domain.Direction;
-import studying.neural.wanderer.domain.LocationInfo;
-import studying.neural.wanderer.domain.Matrix;
-import studying.neural.wanderer.domain.Snake;
+import studying.neural.wanderer.components.Coordinates;
+import studying.neural.wanderer.components.Direction;
+import studying.neural.wanderer.components.LocationInfo;
+import studying.neural.wanderer.components.Matrix;
+import studying.neural.wanderer.components.Sensor;
+import studying.neural.wanderer.components.Snake;
+import studying.neural.wanderer.tools.DefaultSensorListCreator;
 
 public class Game implements Runnable {
+
+    private final DefaultSensorListCreator defaultSensorListCreator
+            = DefaultSensorListCreator.getInstance();
 
     private final int maxLifeTime;
     private final int width;
@@ -30,6 +35,10 @@ public class Game implements Runnable {
         var spawnPoint = new Coordinates(width / 10, height / 2);
         this.snake = new Snake(spawnPoint, Direction.EAST);
         this.lifeTime = maxLifeTime;
+
+        this.snake.getSensorList().addAll(
+                defaultSensorListCreator.createDefault(matrix, snake)
+        );
 
         spawnFeed();
     }

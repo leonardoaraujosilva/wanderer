@@ -1,8 +1,6 @@
-package studying.neural.wanderer.domain;
+package studying.neural.wanderer.components;
 
 import lombok.EqualsAndHashCode;
-
-import java.time.LocalDateTime;
 
 @EqualsAndHashCode
 public class Matrix {

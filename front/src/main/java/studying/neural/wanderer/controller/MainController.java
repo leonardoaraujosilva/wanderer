@@ -7,9 +7,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import lombok.SneakyThrows;
-import studying.neural.wanderer.domain.dto.MapImageData;
-import studying.neural.wanderer.service.car.CarManager;
-import studying.neural.wanderer.service.map.MapLoader;
+import studying.neural.wanderer.components.dto.MapImageData;
+import studying.neural.wanderer.tools.car.CarManager;
+import studying.neural.wanderer.tools.map.MapLoader;
 
 import java.io.File;
 import java.net.URL;

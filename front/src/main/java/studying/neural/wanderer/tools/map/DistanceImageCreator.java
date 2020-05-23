@@ -1,8 +1,8 @@
-package studying.neural.wanderer.service.map;
+package studying.neural.wanderer.tools.map;
 
 import lombok.SneakyThrows;
-import studying.neural.wanderer.domain.model.Map;
-import studying.neural.wanderer.domain.model.TrackType;
+import studying.neural.wanderer.components.model.Map;
+import studying.neural.wanderer.components.model.TrackType;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

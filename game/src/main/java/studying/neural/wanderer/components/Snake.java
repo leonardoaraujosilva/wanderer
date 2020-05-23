@@ -1,4 +1,4 @@
-package studying.neural.wanderer.domain;
+package studying.neural.wanderer.components;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -10,6 +10,7 @@ public class Snake {
     private final List<Coordinates> snake = new ArrayList<>();
     private final Queue<Coordinates> stomach = new LinkedList<>();
 
+    private final List<Sensor> sensorList = new ArrayList<>();
     private Direction currentDirection;
 
     public Snake(Coordinates coordinates, Direction startDirection) {
@@ -41,6 +42,14 @@ public class Snake {
 
     public Coordinates getTail() {
         return snake.get(snake.size() - 1);
+    }
+
+    public Direction getCurrentDirection() {
+        return currentDirection;
+    }
+
+    public List<Sensor> getSensorList() {
+        return sensorList;
     }
 
     public int size() {

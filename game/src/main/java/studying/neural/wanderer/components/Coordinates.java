@@ -1,4 +1,4 @@
-package studying.neural.wanderer.domain;
+package studying.neural.wanderer.components;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
