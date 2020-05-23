@@ -10,7 +10,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>front</module>
-        <module>back</module>
+        <module>game</module>
         <module>ai</module>
     </modules>
 
