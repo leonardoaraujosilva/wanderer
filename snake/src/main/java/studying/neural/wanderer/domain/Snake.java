@@ -74,5 +74,9 @@ public class Snake {
         }
     }
 
+    public List<Coordinates> getBody() {
+        return snake;
+    }
+
 
 }

@@ -1,5 +1,6 @@
 package studying.neural.wanderer;
 
+import lombok.SneakyThrows;
 import studying.neural.wanderer.domain.Coordinates;
 import studying.neural.wanderer.domain.Direction;
 import studying.neural.wanderer.domain.LocationInfo;
@@ -43,14 +44,17 @@ public class Game implements Runnable {
     }
 
     @Override
+    @SneakyThrows
     public void run() {
-        while(isAlive()) {
+        var isAlive = isAlive();
+        while(isAlive) {
             lifeTime--;
 
             // TODO add input (turnLeft and turnRight)
 
             eraseTail();
             snake.move();
+            isAlive = isAlive();
             printHead();
 
             if(isEating()) {
@@ -59,6 +63,7 @@ public class Game implements Runnable {
                 spawnFeed();
                 lifeTime = maxLifeTime;
             }
+            Thread.sleep(1);
         }
 
         // TODO send neural network settings
@@ -123,4 +128,8 @@ public class Game implements Runnable {
     public int getPoints() {
         return points;
     }
+
+    public Snake getSnake() { return snake; }
+
+    public Coordinates getFeed() { return feed; }
 }
