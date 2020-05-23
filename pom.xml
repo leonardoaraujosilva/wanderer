@@ -10,28 +10,12 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>front</module>
-        <module>game</module>
+        <module>snake</module>
         <module>ai</module>
+        <module>car</module>
     </modules>
 
     <dependencies>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>11</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>11</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-swing</artifactId>
-            <version>11</version>
-        </dependency>
-
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
