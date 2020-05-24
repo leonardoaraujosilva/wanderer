@@ -4,7 +4,6 @@ import lombok.SneakyThrows;
 import studying.neural.wanderer.domain.Coordinates;
 import studying.neural.wanderer.domain.Direction;
 import studying.neural.wanderer.domain.LocationInfo;
-import studying.neural.wanderer.domain.Matrix;
 import studying.neural.wanderer.domain.Snake;
 import studying.neural.wanderer.tools.DefaultSensorListCreator;
 
@@ -21,7 +20,7 @@ public class Game implements Runnable {
     private final int height;
     private final OnGameEnded onGameEnded;
 
-    private final Matrix matrix;
+    //private final Matrix matrix;
     private final Snake snake;
     private final NeuralNetwork neuralNetwork;
     private Coordinates feed;
@@ -34,7 +33,6 @@ public class Game implements Runnable {
         this.maxLifeTime = maxLifeTime;
         this.width = width;
         this.height = height;
-        this.matrix = new Matrix(width, height);
         this.neuralNetwork = neuralNetwork;
         this.onGameEnded = onGameEnded;
 
@@ -43,7 +41,7 @@ public class Game implements Runnable {
         this.lifeTime = maxLifeTime;
 
         this.snake.getSensorList().addAll(
-                defaultSensorListCreator.createDefault(matrix, snake)
+                defaultSensorListCreator.createDefault(this, snake)
         );
 
         spawnFeed();
@@ -59,11 +57,9 @@ public class Game implements Runnable {
 
             calculate();
 
-            eraseTail();
             snake.move();
             isAlive = isAlive();
             isEating = isEating();
-            printHead();
 
             if (isEating) {
                 points += Math.sqrt(width * width + height * height);
@@ -84,21 +80,20 @@ public class Game implements Runnable {
 
         for (x = 0; x < width && randomSerialFeed > 0; x++) {
             for (y = 0; y < height && randomSerialFeed > 0; y++) {
-                if (matrix.getPoint(x, y) == LocationInfo.BACKGROUND)
+                if (getPoint(x, y) == LocationInfo.BACKGROUND)
                     randomSerialFeed--;
             }
         }
 
         feed = new Coordinates(x, y);
-        matrix.setPoint(x, y, LocationInfo.FEED);
     }
 
     public boolean isAlive() {
         if (lifeTime < 0)
             return false;
 
-        var head = snake.getHead(); // TODO remove matrix
-        var pointValue = matrix.getPoint(head.getX(), head.getY());
+        var head = snake.getHead();
+        var pointValue = getPoint(head.getX(), head.getY());
 
         return pointValue == LocationInfo.BACKGROUND ||
                 pointValue == LocationInfo.FEED;
@@ -108,16 +103,6 @@ public class Game implements Runnable {
         var head = snake.getHead();
         return feed.getX() == head.getX() &&
                 feed.getY() == head.getY();
-    }
-
-    private void eraseTail() {
-        var tail = snake.getTail();
-        matrix.setPoint(tail.getX(), tail.getY(), LocationInfo.BACKGROUND);
-    }
-
-    private void printHead() {
-        var tail = snake.getHead();
-        matrix.setPoint(tail.getX(), tail.getY(), LocationInfo.SNAKE);
     }
 
     private void calculate() {
@@ -144,8 +129,23 @@ public class Game implements Runnable {
         if (right)
             snake.turnRight();
 
-        if(left && !right || right && !left)
+        if (left && !right || right && !left)
             points++;
+    }
+
+    public LocationInfo getPoint(int x, int y) {
+
+        if(feed.getX() == x && feed.getY() == y)
+            return LocationInfo.FEED;
+
+        if (x < 0 || x >= width || y < 0 || y >= height)
+            return LocationInfo.INVALID;
+
+        for (var each : snake.getBody())
+            if (each.getX() == x && each.getY() == y)
+                return LocationInfo.SNAKE;
+
+        return LocationInfo.BACKGROUND;
     }
 
     private double calculateDistanceToFeed() {
@@ -153,10 +153,6 @@ public class Game implements Runnable {
         var diffX = Math.abs(head.getX() - feed.getX());
         var diffY = Math.abs(head.getY() - feed.getY());
         return Math.sqrt(diffX * diffX + diffY * diffY);
-    }
-
-    public LocationInfo[][] getMatrix() {
-        return matrix.getMatrix();
     }
 
     public int getWidth() {

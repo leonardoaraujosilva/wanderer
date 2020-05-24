@@ -1,5 +1,6 @@
 package studying.neural.wanderer.domain;
 
+import studying.neural.wanderer.Game;
 import studying.neural.wanderer.tools.DirectionClockwise;
 
 public class Sensor {
@@ -10,11 +11,11 @@ public class Sensor {
     private final Coordinates position;
     private final Direction direction;
 
-    private final Matrix matrix;
+    private final Game game;
     private final Snake snake;
 
-    public Sensor(String id, Coordinates relativeToHeadOnNorthPosition, Direction relativeToHeadOnNorthDirection, Matrix matrix, Snake snake) {
-        this.matrix = matrix;
+    public Sensor(String id, Coordinates relativeToHeadOnNorthPosition, Direction relativeToHeadOnNorthDirection, Game game, Snake snake) {
+        this.game = game;
         this.snake = snake;
         this.directionClockwise = DirectionClockwise.getInstance();
         this.position = relativeToHeadOnNorthPosition;
@@ -32,7 +33,7 @@ public class Sensor {
 
         var distance = 0;
         var directionOnMatrix = directionClockwise.convertRelative(snake.getCurrentDirection(), direction);
-        while (matrix.getPoint(current.getX(), current.getY()) == LocationInfo.BACKGROUND) {
+        while (game.getPoint(current.getX(), current.getY()) == LocationInfo.BACKGROUND) {
             current.set(
                     current.getX() + directionOnMatrix.getMovementX(),
                     current.getY() + directionOnMatrix.getMovementY()
