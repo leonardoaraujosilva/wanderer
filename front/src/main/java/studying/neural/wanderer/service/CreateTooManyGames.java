@@ -20,48 +20,45 @@ public class CreateTooManyGames implements OnGameEnded {
 
     private static final int WIDTH = 50;
     private static final int HEIGHT = 50;
-    private static final int MAX_LIFE_TIME = 2500;
-    private static final int SCALE = 1;
-    private static final int GAMES_COUNT = 250;
+    private static final int MAX_LIFE_TIME = 250;
+    private static final int SCALE = 10;
+    private static final int GAMES_COUNT = 100;
 
-    private int running = 0;
     private int generation = 1;
     private int betterGen = 0;
 
-    private int lifetime;
+    private int running;
     private int betterPoints = 1;
     private NeuralNetwork betterNetwork = null;
 
     private Map<Integer, Integer> counter;
 
     private NeuralNetworkCreator neuralNetworkCreator = new NeuralNetworkCreator();
+    private List<Game> gameList;
 
     public void createAndStart(ImageView imageView) {
 
         counter = new HashMap<>();
-        lifetime = 500;
+        gameList = new ArrayList<Game>();
 
-        int games = GAMES_COUNT;
-        var gameList = new ArrayList<Game>();
-
-        if(betterNetwork != null) {
+        if (betterNetwork != null)
             gameList.add(new Game(WIDTH, HEIGHT, MAX_LIFE_TIME, betterNetwork, this));
-            games--;
-        }
 
-        for (running = 0; running < games; running++)
+        while (gameList.size() < GAMES_COUNT)
             gameList.add(new Game(WIDTH, HEIGHT, MAX_LIFE_TIME, neuralNetworkCreator.create(betterNetwork), this));
 
-        new Thread(() -> render(gameList, imageView)).start();
+        running = gameList.size();
+        new Thread(() -> render(imageView)).start();
 
         for (var each : gameList)
             new Thread(each).start();
     }
 
     @Override
-    public void onGameEnded(int points, NeuralNetwork neuralNetwork) {
-//        System.out.printf("ok");
-        running --;
+    public synchronized void onGameEnded(Game game, NeuralNetwork neuralNetwork) {
+        var points = game.getPoints();
+
+        running--;
         if (points > betterPoints || points == betterPoints && generation > betterGen + 20) {
             betterNetwork = neuralNetwork;
             betterPoints = points;
@@ -74,16 +71,14 @@ public class CreateTooManyGames implements OnGameEnded {
     }
 
     @SneakyThrows
-    private void render(List<Game> gameList, ImageView imageView) {
+    private void render(ImageView imageView) {
         System.out.println("Generation: " + generation++);
 
-        while (running > 0 && lifetime > 0) {
-            var image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        while (running > 0) {
+            var image = new BufferedImage(WIDTH * SCALE, HEIGHT * SCALE, BufferedImage.TYPE_INT_RGB);
 
             for (var game : gameList) {
-
-                //if(game.isAlive())
-                {
+                if (game.isRunning()) {
                     var body = game.getSnake().getBody();
                     for (var each : body)
                         printWithScale(image, each.getX(), each.getY(), Color.GREEN);
@@ -94,15 +89,12 @@ public class CreateTooManyGames implements OnGameEnded {
 
             var rendered = SwingFXUtils.toFXImage(image, null);
             Platform.runLater(() -> imageView.setImage(rendered));
-            lifetime--;
         }
 
-        System.out.println("LifeTime: " + lifetime);
         System.out.println("Counter (Acertos, quantidade): " + counter + "Record=" + betterPoints + " at gen " + betterGen);
         createAndStart(imageView);
     }
 
-    @SneakyThrows
     private void printWithScale(BufferedImage image, int x, int y, Color color) {
         int rgbColor = color.getRGB();
 

@@ -29,10 +29,17 @@ public class Snake {
         for(var index = snake.size() - 1; index > 0; index--)
             snake.get(index).set(snake.get(index - 1));
 
-        var first = snake.get(0);
-        first.set(
-                first.getX() + currentDirection.getMovementX(),
-                first.getY() + currentDirection.getMovementY()
+        var head = getHead();
+        head.set(
+                head.getX() + currentDirection.getMovementX(),
+                head.getY() + currentDirection.getMovementY()
+        );
+    }
+
+    public Coordinates getNextMove() {
+        var head = getHead();
+        return new Coordinates(head.getX() + currentDirection.getMovementX(),
+                head.getY() + currentDirection.getMovementY()
         );
     }
 

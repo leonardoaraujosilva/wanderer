@@ -28,6 +28,7 @@ public class Game implements Runnable {
     private int points = 0;
     private int lifeTime;
     private Random random = new Random(146231);
+    private boolean running = true;
 
     public Game(int width, int height, int maxLifeTime, NeuralNetwork neuralNetwork, OnGameEnded onGameEnded) {
         this.maxLifeTime = maxLifeTime;
@@ -50,27 +51,29 @@ public class Game implements Runnable {
     @Override
     @SneakyThrows
     public void run() {
-        var isAlive = isAlive();
         boolean isEating;
-        while (isAlive) {
+        do {
             lifeTime--;
 
             calculate();
 
+            if(!isAlive(snake.getNextMove()))
+                break;
+
             snake.move();
-            isAlive = isAlive();
             isEating = isEating();
 
             if (isEating) {
-                points += Math.sqrt(width * width + height * height);
+                points ++;
                 snake.eat();
                 spawnFeed();
                 lifeTime = maxLifeTime;
             }
-            Thread.sleep(20);
-        }
+            Thread.sleep(10);
+        } while (true);
 
-        onGameEnded.onGameEnded(points, neuralNetwork);
+        running = false;
+        onGameEnded.onGameEnded(this, neuralNetwork);
     }
 
     private void spawnFeed() {
@@ -88,12 +91,15 @@ public class Game implements Runnable {
         feed = new Coordinates(x, y);
     }
 
-    public boolean isAlive() {
+    public boolean isRunning() {
+        return running;
+    }
+
+    public boolean isAlive(Coordinates nextMove) {
         if (lifeTime < 0)
             return false;
 
-        var head = snake.getHead();
-        var pointValue = getPoint(head.getX(), head.getY());
+        var pointValue = getPoint(nextMove.getX(), nextMove.getY());
 
         return pointValue == LocationInfo.BACKGROUND ||
                 pointValue == LocationInfo.FEED;
@@ -135,7 +141,7 @@ public class Game implements Runnable {
 
     public LocationInfo getPoint(int x, int y) {
 
-        if(feed.getX() == x && feed.getY() == y)
+        if (feed != null && feed.getX() == x && feed.getY() == y)
             return LocationInfo.FEED;
 
         if (x < 0 || x >= width || y < 0 || y >= height)
