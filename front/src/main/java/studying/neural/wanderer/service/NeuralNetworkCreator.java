@@ -4,7 +4,7 @@ import studying.neural.wanderer.NeuralNetwork;
 
 public class NeuralNetworkCreator {
 
-    public NeuralNetwork create(NeuralNetwork neuralNetwork) {
+    public NeuralNetwork create(NeuralNetwork neuralNetwork, double range, int max, int index) {
         if (neuralNetwork == null)
             return create();
 
@@ -14,6 +14,11 @@ public class NeuralNetworkCreator {
         var hiddenLayerIds = neuralNetwork.getLayer(1).keySet();
         var outputLayerIds = neuralNetwork.getLayer(2).keySet();
 
+        // number of combinations (weights)
+        int combinations = inputLayerIds.size() * hiddenLayerIds.size() + hiddenLayerIds.size() * outputLayerIds.size();
+        double value = range * combinations;
+        double slice = value / max;
+
         for(var each : inputLayerIds)
             newNeuralNetwork.createNeuron(each, 0);
         for(var each : hiddenLayerIds)
@@ -21,20 +26,27 @@ public class NeuralNetworkCreator {
         for(var each : outputLayerIds)
             newNeuralNetwork.createNeuron(each, 2);
 
+        var combCount = 1;
         for (var eachInput : inputLayerIds) {
             for (var eachHidden : hiddenLayerIds) {
                 for (var eachOutput : outputLayerIds) {
-                    newNeuralNetwork.createConnection(1, eachHidden, eachOutput, balance(neuralNetwork.getLayer(1).get(eachHidden).getWeight(eachOutput)));
+                    newNeuralNetwork.createConnection(1, eachHidden, eachOutput, balance(index, slice, range, combinations, max, combCount));
+                    combCount++;
                 }
-                newNeuralNetwork.createConnection(0, eachInput, eachHidden, balance(neuralNetwork.getLayer(0).get(eachInput).getWeight(eachHidden)));
+                newNeuralNetwork.createConnection(0, eachInput, eachHidden, balance(index, slice, range, combinations, max, combCount));//balance(neuralNetwork.getLayer(0).get(eachInput).getWeight(eachHidden)));
+                combCount++;
             }
         }
 
         return newNeuralNetwork;
     }
 
-    private double balance(double original) {
-        return Math.max(-1000, Math.min(1000, original + (Math.random() * 1000 - 500)));
+    private double balance(int index, double slice, double range, int connections, int max, int conIndex) {
+        var multiplicador = index / connections;
+        var resto = index % connections - conIndex;
+        var value = resto <= 0? 0 : multiplicador * slice;
+        double sum = value - range / 2;
+        return Math.max(-1000, Math.min(1000, sum));
     }
 
     public NeuralNetwork create() {

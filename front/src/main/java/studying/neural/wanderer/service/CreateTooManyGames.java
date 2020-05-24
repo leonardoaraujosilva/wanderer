@@ -42,6 +42,7 @@ public class CreateTooManyGames implements OnGameEnded {
     private int betterPoints = 0;
     private int bestFeedAte = 0;
     private NeuralNetwork betterNetwork = null;
+    private double range = 500.0;
 
     private Map<Integer, Integer> counter;
 
@@ -60,19 +61,19 @@ public class CreateTooManyGames implements OnGameEnded {
         betterPoints = 0;
         bestFeedAte = 0;
 
-        if(betterNetwork != null) {
-            FileOutputStream fout = new FileOutputStream("./network.txt");
-            ObjectOutputStream oos = new ObjectOutputStream(fout);
-            oos.writeObject(betterNetwork);
-        } else {
-            try {
-                FileInputStream fout = new FileInputStream("./network.txt");
-                ObjectInputStream oos = new ObjectInputStream(fout);
-                betterNetwork = (NeuralNetwork) oos.readObject();
-            } catch (Exception ignore) {
-
-            }
-        }
+//        if(betterNetwork != null) {
+//            FileOutputStream fout = new FileOutputStream("./network.txt");
+//            ObjectOutputStream oos = new ObjectOutputStream(fout);
+//            oos.writeObject(betterNetwork);
+//        } else {
+//            try {
+//                FileInputStream fout = new FileInputStream("./network.txt");
+//                ObjectInputStream oos = new ObjectInputStream(fout);
+//                betterNetwork = (NeuralNetwork) oos.readObject();
+//            } catch (Exception ignore) {
+//
+//            }
+//        }
 
         var seedToRandomizeFeed = 1234;//randomFeedSeed.nextInt();
 
@@ -80,7 +81,7 @@ public class CreateTooManyGames implements OnGameEnded {
 //            gameList.add(new Game(WIDTH, HEIGHT, MAX_LIFE_TIME, betterNetwork, seedToRandomizeFeed, this));
 
         while (gameList.size() < GAMES_COUNT)
-            gameList.add(new Game(WIDTH, HEIGHT, MAX_LIFE_TIME, neuralNetworkCreator.create(betterNetwork), seedToRandomizeFeed, this));
+            gameList.add(new Game(WIDTH, HEIGHT, MAX_LIFE_TIME, neuralNetworkCreator.create(betterNetwork, bestFeedAte == 0? range :  range / bestFeedAte, GAMES_COUNT, gameList.size()), seedToRandomizeFeed, this));
 
         running = gameList.size();
         new Thread(() -> render(imageView)).start();
