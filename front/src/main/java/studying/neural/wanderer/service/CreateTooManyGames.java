@@ -30,6 +30,8 @@ public class CreateTooManyGames implements OnGameEnded {
     private int generation = 1;
     private int betterGen = 0;
 
+    private int lastAte = 0;
+
     private int running = 0;
     private int allBetterPoints = 0;
     private int betterPoints = 0;
@@ -49,13 +51,14 @@ public class CreateTooManyGames implements OnGameEnded {
 
         counter = new HashMap<>();
         gameList = new ArrayList<Game>();
+        lastAte = bestFeedAte;
         betterPoints = 0;
         bestFeedAte = 0;
 
-        var seedToRandomizeFeed = randomFeedSeed.nextInt();
+        var seedToRandomizeFeed = 1234;//randomFeedSeed.nextInt();
 
-        if (betterNetwork != null)
-            gameList.add(new Game(WIDTH, HEIGHT, MAX_LIFE_TIME, betterNetwork, seedToRandomizeFeed, this));
+//        if (betterNetwork != null)
+//            gameList.add(new Game(WIDTH, HEIGHT, MAX_LIFE_TIME, betterNetwork, seedToRandomizeFeed, this));
 
         while (gameList.size() < GAMES_COUNT)
             gameList.add(new Game(WIDTH, HEIGHT, MAX_LIFE_TIME, neuralNetworkCreator.create(betterNetwork), seedToRandomizeFeed, this));
@@ -72,8 +75,6 @@ public class CreateTooManyGames implements OnGameEnded {
     @Override
     public synchronized void onGameEnded(Game game, NeuralNetwork neuralNetwork) {
         var points = game.getPoints();
-        var bestPoint = false;
-        var bestAte = false;
         if (points > betterPoints) {
             betterNetwork = neuralNetwork;
             betterPoints = points;
@@ -82,12 +83,10 @@ public class CreateTooManyGames implements OnGameEnded {
                 System.out.println("NEW RECORD[Ate = " + game.getFeedAte() + "] = Points: " + points + " neuralNetwork:" + neuralNetwork);
                 allBetterPoints = betterPoints;
             }
-            bestPoint = true;
         }
 
         if(game.getFeedAte() >= bestFeedAte) {
             bestFeedAte = game.getFeedAte();
-            bestAte = true;
         }
 
         counter.put(points, counter.getOrDefault(points, 0) + 1);

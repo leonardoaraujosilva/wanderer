@@ -14,19 +14,27 @@ public class NeuralNetworkCreator {
         var hiddenLayerIds = neuralNetwork.getLayer(1).keySet();
         var outputLayerIds = neuralNetwork.getLayer(2).keySet();
 
+        for(var each : inputLayerIds)
+            newNeuralNetwork.createNeuron(each, 0);
+        for(var each : hiddenLayerIds)
+            newNeuralNetwork.createNeuron(each, 1);
+        for(var each : outputLayerIds)
+            newNeuralNetwork.createNeuron(each, 2);
+
         for (var eachInput : inputLayerIds) {
-            newNeuralNetwork.createNeuron(eachInput, 0);
             for (var eachHidden : hiddenLayerIds) {
-                newNeuralNetwork.createNeuron(eachHidden, 1);
                 for (var eachOutput : outputLayerIds) {
-                    newNeuralNetwork.createNeuron(eachOutput, 2);
-                    newNeuralNetwork.createConnection(1, eachHidden, eachOutput, neuralNetwork.getLayer(1).get(eachHidden).getWeight(eachOutput) + (Math.random() * 1000.0 - 500.0));
+                    newNeuralNetwork.createConnection(1, eachHidden, eachOutput, balance(neuralNetwork.getLayer(1).get(eachHidden).getWeight(eachOutput)));
                 }
-                newNeuralNetwork.createConnection(0, eachInput, eachHidden, neuralNetwork.getLayer(0).get(eachInput).getWeight(eachHidden) + (Math.random() * 1000.0 - 500.0));
+                newNeuralNetwork.createConnection(0, eachInput, eachHidden, balance(neuralNetwork.getLayer(0).get(eachInput).getWeight(eachHidden)));
             }
         }
 
         return newNeuralNetwork;
+    }
+
+    private double balance(double original) {
+        return Math.max(-1000, Math.min(1000, original + (Math.random() * 500.0 - 250.0)));
     }
 
     public NeuralNetwork create() {
@@ -35,12 +43,16 @@ public class NeuralNetworkCreator {
         neuralNetwork.createNeuron("Sensor 01", 0);
         neuralNetwork.createNeuron("Sensor 02", 0);
         neuralNetwork.createNeuron("Sensor 03", 0);
-        neuralNetwork.createNeuron("Sensor 04", 0);
-        neuralNetwork.createNeuron("Sensor 05", 0);
-        neuralNetwork.createNeuron("distanceToFeed", 0);
+//        neuralNetwork.createNeuron("Sensor 04", 0);
+//        neuralNetwork.createNeuron("Sensor 05", 0);
+//        neuralNetwork.createNeuron("distanceToFeed", 0);
         neuralNetwork.createNeuron("currentDirectionX", 0);
         neuralNetwork.createNeuron("currentDirectionY", 0);
-        neuralNetwork.createNeuron("lifeTime", 0);
+        neuralNetwork.createNeuron("leftCounter", 0);
+        neuralNetwork.createNeuron("rightCounter", 0);
+//        neuralNetwork.createNeuron("lifeTime", 0);
+        neuralNetwork.createNeuron("feedX", 0);
+        neuralNetwork.createNeuron("feedY", 0);
 
         neuralNetwork.createNeuron("Hidden 01", 1);
         neuralNetwork.createNeuron("Hidden 02", 1);
@@ -48,11 +60,11 @@ public class NeuralNetworkCreator {
         neuralNetwork.createNeuron("Hidden 04", 1);
         neuralNetwork.createNeuron("Hidden 05", 1);
         neuralNetwork.createNeuron("Hidden 06", 1);
-//        neuralNetwork.createNeuron("Hidden 07", 1);
-//        neuralNetwork.createNeuron("Hidden 08", 1);
-//        neuralNetwork.createNeuron("Hidden 09", 1);
-//        neuralNetwork.createNeuron("Hidden 10", 1);
-//        neuralNetwork.createNeuron("Hidden 11", 1);
+        neuralNetwork.createNeuron("Hidden 07", 1);
+        neuralNetwork.createNeuron("Hidden 08", 1);
+        neuralNetwork.createNeuron("Hidden 09", 1);
+        neuralNetwork.createNeuron("Hidden 10", 1);
+        neuralNetwork.createNeuron("Hidden 11", 1);
 //        neuralNetwork.createNeuron("Hidden 12", 1);
 //        neuralNetwork.createNeuron("Hidden 13", 1);
 //        neuralNetwork.createNeuron("Hidden 14", 1);

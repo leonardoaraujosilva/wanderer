@@ -33,7 +33,8 @@ public class Sensor {
 
         var distance = 0;
         var directionOnMatrix = directionClockwise.convertRelative(snake.getCurrentDirection(), direction);
-        while (game.getPoint(current.getX(), current.getY()) == LocationInfo.BACKGROUND) {
+        while (game.getPoint(current.getX(), current.getY()) == LocationInfo.BACKGROUND ||
+            game.getPoint(current.getX(), current.getY()) == LocationInfo.FEED) {
             current.set(
                     current.getX() + directionOnMatrix.getMovementX(),
                     current.getY() + directionOnMatrix.getMovementY()

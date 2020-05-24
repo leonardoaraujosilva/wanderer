@@ -29,12 +29,12 @@ public class DefaultSensorListCreator {
 
         var right = new Coordinates(1, 0);
         list.add(new Sensor("Sensor 03", right, Direction.EAST, game, snake));
-
-        var backLeft = new Coordinates(-1, 1);
-        list.add(new Sensor("Sensor 04", backLeft, Direction.SOUTH, game, snake));
-
-        var backRight = new Coordinates(1, 1);
-        list.add(new Sensor("Sensor 05", backRight, Direction.SOUTH, game, snake));
+//
+//        var backLeft = new Coordinates(-1, 1);
+//        list.add(new Sensor("Sensor 04", backLeft, Direction.SOUTH, game, snake));
+//
+//        var backRight = new Coordinates(1, 1);
+//        list.add(new Sensor("Sensor 05", backRight, Direction.SOUTH, game, snake));
 
         return list;
     }

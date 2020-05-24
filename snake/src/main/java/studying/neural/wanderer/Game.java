@@ -30,6 +30,11 @@ public class Game implements Runnable {
     private int feedAte = 0;
     private Random random;
     private boolean running = true;
+    private int maxDistance;
+    private int leftCounter = 0;
+    private int rightCounter = 0;
+
+    public static int sleep = 0;
 
     public Game(int width, int height, int maxLifeTime, NeuralNetwork neuralNetwork, int seedToRandomizeFeed, OnGameEnded onGameEnded) {
         this.maxLifeTime = maxLifeTime;
@@ -38,6 +43,7 @@ public class Game implements Runnable {
         this.neuralNetwork = neuralNetwork;
         this.onGameEnded = onGameEnded;
         this.random =  new Random(seedToRandomizeFeed);
+        this.maxDistance = (int) Math.sqrt(width * width + height * height);
 
         var spawnPoint = new Coordinates(width / 10, height / 2);
         this.snake = new Snake(spawnPoint, Direction.EAST);
@@ -59,22 +65,33 @@ public class Game implements Runnable {
 
             calculate();
 
-            if(!isAlive(snake.getNextMove()))
+            if(!isAlive(snake.getNextMove()) || leftCounter >= 12 || rightCounter >= 12)
                 break;
+
+            if(leftCounter >= 4 || rightCounter >= 4) {
+                points -= maxDistance / 10;
+            }
 
             snake.move();
             isEating = isEating();
 
             if (isEating) {
                 feedAte++;
-                points += maxLifeTime * feedAte + maxLifeTime - (maxLifeTime - lifeTime);
+                points += feedAte * maxDistance;
                 snake.eat();
                 spawnFeed();
                 lifeTime = maxLifeTime;
+                rightCounter = leftCounter = 0;
             }
-            Thread.sleep(25);
+            Thread.sleep(sleep);
         } while (true);
 
+        var head = getSnake().getHead();
+        if(getPoint(head.getX(), head.getY()) == LocationInfo.INVALID)
+            points = (int) (points * 0.75);
+
+        var distanceToFeed = calculateDistanceToFeed();
+        points += maxDistance - distanceToFeed;
         running = false;
         onGameEnded.onGameEnded(this, neuralNetwork);
     }
@@ -127,9 +144,11 @@ public class Game implements Runnable {
                     (double) sensorList.get(i).calculateDistance()
             );
 
-        var distanceToFeed = calculateDistanceToFeed();
-        input.put("distanceToFeed", distanceToFeed);
-        input.put("lifetime", (double) lifeTime);
+        var head = snake.getHead();
+        input.put("feedX", (double) (feed.getX() - head.getX()));
+        input.put("feedY", (double) (feed.getY() - head.getY()));
+        input.put("leftCounter", (double) leftCounter);
+        input.put("rightCounter", (double) rightCounter);
         input.put("currentDirectionX", (double) snake.getCurrentDirection().getMovementX());
         input.put("currentDirectionY", (double) snake.getCurrentDirection().getMovementY());
 
@@ -137,11 +156,17 @@ public class Game implements Runnable {
         var left = response.get("turnLeft") > 0;
         var right = response.get("turnRight") > 0;
 
-        if (left)
+        if (left) {
             snake.turnLeft();
+            leftCounter++;
+            rightCounter = 0;
+        }
 
-        if (right)
+        if (right) {
             snake.turnRight();
+            rightCounter++;
+            leftCounter = 0;
+        }
     }
 
     public LocationInfo getPoint(int x, int y) {
