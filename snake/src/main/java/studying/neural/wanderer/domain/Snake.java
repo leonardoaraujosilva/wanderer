@@ -19,11 +19,16 @@ public class Snake {
     }
 
     public void eat() {
-        stomach.add(snake.get(0));
+        var head = getHead();
+        stomach.add(new Coordinates(head.getX(), head.getY()));
     }
 
     public void move() {
-        if(snake.get(snake.size() - 1) == stomach.peek())
+        var tail = getTail();
+        var feedOnStomach = stomach.peek();
+        if(feedOnStomach != null &&
+                tail.getX() == feedOnStomach.getX() &&
+                tail.getY() == feedOnStomach.getY())
             snake.add(stomach.poll());
 
         for(var index = snake.size() - 1; index > 0; index--)

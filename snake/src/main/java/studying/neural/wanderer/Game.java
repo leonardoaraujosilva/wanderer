@@ -27,15 +27,17 @@ public class Game implements Runnable {
 
     private int points = 0;
     private int lifeTime;
-    private Random random = new Random(146231);
+    private int feedAte = 0;
+    private Random random;
     private boolean running = true;
 
-    public Game(int width, int height, int maxLifeTime, NeuralNetwork neuralNetwork, OnGameEnded onGameEnded) {
+    public Game(int width, int height, int maxLifeTime, NeuralNetwork neuralNetwork, int seedToRandomizeFeed, OnGameEnded onGameEnded) {
         this.maxLifeTime = maxLifeTime;
         this.width = width;
         this.height = height;
         this.neuralNetwork = neuralNetwork;
         this.onGameEnded = onGameEnded;
+        this.random =  new Random(seedToRandomizeFeed);
 
         var spawnPoint = new Coordinates(width / 10, height / 2);
         this.snake = new Snake(spawnPoint, Direction.EAST);
@@ -64,12 +66,13 @@ public class Game implements Runnable {
             isEating = isEating();
 
             if (isEating) {
-                points ++;
+                feedAte++;
+                points += maxLifeTime * feedAte + maxLifeTime - (maxLifeTime - lifeTime);
                 snake.eat();
                 spawnFeed();
                 lifeTime = maxLifeTime;
             }
-            Thread.sleep(10);
+            Thread.sleep(25);
         } while (true);
 
         running = false;
@@ -77,16 +80,19 @@ public class Game implements Runnable {
     }
 
     private void spawnFeed() {
-        var freeArea = width * height - snake.size();
-        var randomSerialFeed = random.nextDouble() * freeArea;//Math.random() * freeArea;
         int x = 0, y = 0;
 
-        for (x = 0; x < width && randomSerialFeed > 0; x++) {
-            for (y = 0; y < height && randomSerialFeed > 0; y++) {
-                if (getPoint(x, y) == LocationInfo.BACKGROUND)
-                    randomSerialFeed--;
+        do {
+            var freeArea = width * height - snake.size();
+            var randomSerialFeed = random.nextDouble() * freeArea;//Math.random() * freeArea;
+
+            for (x = 0; x < width && randomSerialFeed > 0; x++) {
+                for (y = 0; y < height && randomSerialFeed > 0; y++) {
+                    if (getPoint(x, y) == LocationInfo.BACKGROUND)
+                        randomSerialFeed--;
+                }
             }
-        }
+        } while(getPoint(x, y) != LocationInfo.BACKGROUND);
 
         feed = new Coordinates(x, y);
     }
@@ -123,7 +129,9 @@ public class Game implements Runnable {
 
         var distanceToFeed = calculateDistanceToFeed();
         input.put("distanceToFeed", distanceToFeed);
-        input.put("lifeTime", (double) lifeTime);
+        input.put("lifetime", (double) lifeTime);
+        input.put("currentDirectionX", (double) snake.getCurrentDirection().getMovementX());
+        input.put("currentDirectionY", (double) snake.getCurrentDirection().getMovementY());
 
         var response = neuralNetwork.calculate(input);
         var left = response.get("turnLeft") > 0;
@@ -134,9 +142,6 @@ public class Game implements Runnable {
 
         if (right)
             snake.turnRight();
-
-        if (left && !right || right && !left)
-            points++;
     }
 
     public LocationInfo getPoint(int x, int y) {
@@ -179,5 +184,9 @@ public class Game implements Runnable {
 
     public Coordinates getFeed() {
         return feed;
+    }
+
+    public int getFeedAte() {
+        return feedAte;
     }
 }
