@@ -11,6 +11,11 @@ import studying.neural.wanderer.OnGameEnded;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
@@ -54,6 +59,20 @@ public class CreateTooManyGames implements OnGameEnded {
         lastAte = bestFeedAte;
         betterPoints = 0;
         bestFeedAte = 0;
+
+        if(betterNetwork != null) {
+            FileOutputStream fout = new FileOutputStream("./network.txt");
+            ObjectOutputStream oos = new ObjectOutputStream(fout);
+            oos.writeObject(betterNetwork);
+        } else {
+            try {
+                FileInputStream fout = new FileInputStream("./network.txt");
+                ObjectInputStream oos = new ObjectInputStream(fout);
+                betterNetwork = (NeuralNetwork) oos.readObject();
+            } catch (Exception ignore) {
+
+            }
+        }
 
         var seedToRandomizeFeed = 1234;//randomFeedSeed.nextInt();
 

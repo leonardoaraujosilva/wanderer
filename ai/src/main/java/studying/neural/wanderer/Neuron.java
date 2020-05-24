@@ -2,9 +2,10 @@ package studying.neural.wanderer;
 
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class Neuron {
+public class Neuron implements Serializable {
 
     @Getter
     private String id;

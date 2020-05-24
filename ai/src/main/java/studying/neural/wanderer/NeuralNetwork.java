@@ -2,12 +2,13 @@ package studying.neural.wanderer;
 
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 @ToString
-public class NeuralNetwork {
+public class NeuralNetwork implements Serializable {
 
      private ArrayList<Map<String, Neuron>> network = new ArrayList<>();
 

@@ -34,7 +34,7 @@ public class NeuralNetworkCreator {
     }
 
     private double balance(double original) {
-        return Math.max(-1000, Math.min(1000, original + (Math.random() * 500.0 - 250.0)));
+        return Math.max(-1000, Math.min(1000, original + (Math.random() * 1000 - 500)));
     }
 
     public NeuralNetwork create() {
@@ -63,8 +63,8 @@ public class NeuralNetworkCreator {
         neuralNetwork.createNeuron("Hidden 07", 1);
         neuralNetwork.createNeuron("Hidden 08", 1);
         neuralNetwork.createNeuron("Hidden 09", 1);
-        neuralNetwork.createNeuron("Hidden 10", 1);
-        neuralNetwork.createNeuron("Hidden 11", 1);
+//        neuralNetwork.createNeuron("Hidden 10", 1);
+//        neuralNetwork.createNeuron("Hidden 11", 1);
 //        neuralNetwork.createNeuron("Hidden 12", 1);
 //        neuralNetwork.createNeuron("Hidden 13", 1);
 //        neuralNetwork.createNeuron("Hidden 14", 1);
