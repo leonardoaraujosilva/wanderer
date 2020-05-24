@@ -22,19 +22,19 @@ public class DefaultSensorListCreator {
         var list = new ArrayList<Sensor>();
 
         var front = new Coordinates(0, -1);
-        list.add(new Sensor(front, Direction.NORTH, matrix, snake));
+        list.add(new Sensor("Sensor 01", front, Direction.NORTH, matrix, snake));
 
         var left = new Coordinates(-1, 0);
-        list.add(new Sensor(left, Direction.WEST, matrix, snake));
+        list.add(new Sensor("Sensor 02", left, Direction.WEST, matrix, snake));
 
         var right = new Coordinates(1, 0);
-        list.add(new Sensor(right, Direction.EAST, matrix, snake));
+        list.add(new Sensor("Sensor 03", right, Direction.EAST, matrix, snake));
 
         var backLeft = new Coordinates(-1, 1);
-        list.add(new Sensor(backLeft, Direction.SOUTH, matrix, snake));
+        list.add(new Sensor("Sensor 04", backLeft, Direction.SOUTH, matrix, snake));
 
         var backRight = new Coordinates(1, 1);
-        list.add(new Sensor(backRight, Direction.SOUTH, matrix, snake));
+        list.add(new Sensor("Sensor 05", backRight, Direction.SOUTH, matrix, snake));
 
         return list;
     }

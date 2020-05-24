@@ -2,6 +2,6 @@ package studying.neural.wanderer;
 
 public interface OnGameEnded {
 
-    public void onGameEnded(int points);
+    public void onGameEnded(int points, NeuralNetwork neuralNetwork);
 
 }

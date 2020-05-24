@@ -13,7 +13,7 @@ public class Sensor {
     private final Matrix matrix;
     private final Snake snake;
 
-    public Sensor(Coordinates relativeToHeadOnNorthPosition, Direction relativeToHeadOnNorthDirection, Matrix matrix, Snake snake) {
+    public Sensor(String id, Coordinates relativeToHeadOnNorthPosition, Direction relativeToHeadOnNorthDirection, Matrix matrix, Snake snake) {
         this.matrix = matrix;
         this.snake = snake;
         this.directionClockwise = DirectionClockwise.getInstance();
