@@ -30,10 +30,10 @@ public class NeuralNetworkCreator {
         for (var eachInput : inputLayerIds) {
             for (var eachHidden : hiddenLayerIds) {
                 for (var eachOutput : outputLayerIds) {
-                    newNeuralNetwork.createConnection(1, eachHidden, eachOutput, balance(index, slice, range, combinations, max, combCount));
+                    newNeuralNetwork.createConnection(1, eachHidden, eachOutput, balance(neuralNetwork.getLayer(1).get(eachHidden).getWeight(eachOutput), index, slice, range, combinations, max, combCount));
                     combCount++;
                 }
-                newNeuralNetwork.createConnection(0, eachInput, eachHidden, balance(index, slice, range, combinations, max, combCount));//balance(neuralNetwork.getLayer(0).get(eachInput).getWeight(eachHidden)));
+                newNeuralNetwork.createConnection(0, eachInput, eachHidden, balance(neuralNetwork.getLayer(0).get(eachInput).getWeight(eachHidden), index, slice, range, combinations, max, combCount));//balance(neuralNetwork.getLayer(0).get(eachInput).getWeight(eachHidden)));
                 combCount++;
             }
         }
@@ -41,30 +41,41 @@ public class NeuralNetworkCreator {
         return newNeuralNetwork;
     }
 
-    private double balance(int index, double slice, double range, int connections, int max, int conIndex) {
-        var multiplicador = index / connections;
-        var resto = index % connections - conIndex;
-        var value = resto <= 0? 0 : multiplicador * slice;
-        double sum = value - range / 2;
-        return Math.max(-1000, Math.min(1000, sum));
+    public static double MAX = -1000;
+    public static double MIN = 1000;
+
+    private double balance(double original, int index, double slice, double range, int connections, int max, int conIndex) {
+//        var multiplicador = index / connections;
+//        var resto = index % connections - conIndex;
+//        var value = resto <= 0? 0 : multiplicador * slice;
+//        double sum = value - range / 2;
+        double value = Math.max(-1000.0, Math.min(1000.0, original + Math.random() * range - range / 2));
+
+        if(value > MAX && conIndex == 1)
+            MAX = value;
+        if(value < MIN && conIndex == 1)
+            MIN = value;
+
+        return value;
     }
 
     public NeuralNetwork create() {
         var neuralNetwork = new NeuralNetwork(3);
 
         neuralNetwork.createNeuron("Sensor 01", 0);
-        neuralNetwork.createNeuron("Sensor 02", 0);
-        neuralNetwork.createNeuron("Sensor 03", 0);
+//        neuralNetwork.createNeuron("Sensor 02", 0);
+//        neuralNetwork.createNeuron("Sensor 03", 0);
 //        neuralNetwork.createNeuron("Sensor 04", 0);
 //        neuralNetwork.createNeuron("Sensor 05", 0);
 //        neuralNetwork.createNeuron("distanceToFeed", 0);
-        neuralNetwork.createNeuron("currentDirectionX", 0);
-        neuralNetwork.createNeuron("currentDirectionY", 0);
+//        neuralNetwork.createNeuron("currentDirectionX", 0);
+//        neuralNetwork.createNeuron("currentDirectionY", 0);
         neuralNetwork.createNeuron("leftCounter", 0);
         neuralNetwork.createNeuron("rightCounter", 0);
 //        neuralNetwork.createNeuron("lifeTime", 0);
-        neuralNetwork.createNeuron("feedX", 0);
-        neuralNetwork.createNeuron("feedY", 0);
+        neuralNetwork.createNeuron("size", 0);
+        neuralNetwork.createNeuron("feedXDistance", 0);
+        neuralNetwork.createNeuron("feedYDistance", 0);
 
         neuralNetwork.createNeuron("Hidden 01", 1);
         neuralNetwork.createNeuron("Hidden 02", 1);
@@ -72,9 +83,9 @@ public class NeuralNetworkCreator {
         neuralNetwork.createNeuron("Hidden 04", 1);
         neuralNetwork.createNeuron("Hidden 05", 1);
         neuralNetwork.createNeuron("Hidden 06", 1);
-        neuralNetwork.createNeuron("Hidden 07", 1);
-        neuralNetwork.createNeuron("Hidden 08", 1);
-        neuralNetwork.createNeuron("Hidden 09", 1);
+//        neuralNetwork.createNeuron("Hidden 07", 1);
+//        neuralNetwork.createNeuron("Hidden 08", 1);
+//        neuralNetwork.createNeuron("Hidden 09", 1);
 //        neuralNetwork.createNeuron("Hidden 10", 1);
 //        neuralNetwork.createNeuron("Hidden 11", 1);
 //        neuralNetwork.createNeuron("Hidden 12", 1);

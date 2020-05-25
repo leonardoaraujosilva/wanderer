@@ -28,7 +28,7 @@ public class CreateTooManyGames implements OnGameEnded {
 
     private static final int WIDTH = 50;
     private static final int HEIGHT = 50;
-    private static final int MAX_LIFE_TIME = 250;
+    private static final int MAX_LIFE_TIME = 500;
     private static final int SCALE = 10;
     private static final int GAMES_COUNT = 5000;
 
@@ -42,7 +42,7 @@ public class CreateTooManyGames implements OnGameEnded {
     private int betterPoints = 0;
     private int bestFeedAte = 0;
     private NeuralNetwork betterNetwork = null;
-    private double range = 500.0;
+    private double range = 50.0;
 
     private Map<Integer, Integer> counter;
 
@@ -55,17 +55,24 @@ public class CreateTooManyGames implements OnGameEnded {
 
         System.out.println("Best Snake this gen: Feeds:" + bestFeedAte + " Points=" + betterPoints);
 
+        var precision = 1.0;// / Math.max(1.0, bestFeedAte);
+
         counter = new HashMap<>();
         gameList = new ArrayList<Game>();
         lastAte = bestFeedAte;
         betterPoints = 0;
         bestFeedAte = 0;
 
+        System.out.println("Max: " + NeuralNetworkCreator.MAX + " Min:" + NeuralNetworkCreator.MIN);
+
+        NeuralNetworkCreator.MAX = -1000;
+        NeuralNetworkCreator.MIN = 1000;
+
 //        if(betterNetwork != null) {
 //            FileOutputStream fout = new FileOutputStream("./network.txt");
 //            ObjectOutputStream oos = new ObjectOutputStream(fout);
 //            oos.writeObject(betterNetwork);
-//        } else {
+//        } //else {
 //            try {
 //                FileInputStream fout = new FileInputStream("./network.txt");
 //                ObjectInputStream oos = new ObjectInputStream(fout);
@@ -75,13 +82,13 @@ public class CreateTooManyGames implements OnGameEnded {
 //            }
 //        }
 
-        var seedToRandomizeFeed = 1234;//randomFeedSeed.nextInt();
+        var seedToRandomizeFeed = randomFeedSeed.nextInt();
 
-//        if (betterNetwork != null)
-//            gameList.add(new Game(WIDTH, HEIGHT, MAX_LIFE_TIME, betterNetwork, seedToRandomizeFeed, this));
+        if (betterNetwork != null)
+            gameList.add(new Game(WIDTH, HEIGHT, MAX_LIFE_TIME, betterNetwork, seedToRandomizeFeed, this));
 
         while (gameList.size() < GAMES_COUNT)
-            gameList.add(new Game(WIDTH, HEIGHT, MAX_LIFE_TIME, neuralNetworkCreator.create(betterNetwork, bestFeedAte == 0? range :  range / bestFeedAte, GAMES_COUNT, gameList.size()), seedToRandomizeFeed, this));
+            gameList.add(new Game(WIDTH, HEIGHT, MAX_LIFE_TIME, neuralNetworkCreator.create(betterNetwork, range * precision, GAMES_COUNT, gameList.size()), seedToRandomizeFeed, this));
 
         running = gameList.size();
         new Thread(() -> render(imageView)).start();

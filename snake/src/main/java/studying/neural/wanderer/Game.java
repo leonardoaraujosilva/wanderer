@@ -35,6 +35,7 @@ public class Game implements Runnable {
     private int rightCounter = 0;
 
     public static int sleep = 0;
+    public double minorDistance;
 
     public Game(int width, int height, int maxLifeTime, NeuralNetwork neuralNetwork, int seedToRandomizeFeed, OnGameEnded onGameEnded) {
         this.maxLifeTime = maxLifeTime;
@@ -44,6 +45,7 @@ public class Game implements Runnable {
         this.onGameEnded = onGameEnded;
         this.random =  new Random(seedToRandomizeFeed);
         this.maxDistance = (int) Math.sqrt(width * width + height * height);
+        this.minorDistance = maxDistance;
 
         var spawnPoint = new Coordinates(width / 10, height / 2);
         this.snake = new Snake(spawnPoint, Direction.EAST);
@@ -68,20 +70,16 @@ public class Game implements Runnable {
             if(!isAlive(snake.getNextMove()) || leftCounter >= 12 || rightCounter >= 12)
                 break;
 
-            if(leftCounter >= 4 || rightCounter >= 4) {
-                points -= maxDistance / 10;
-            }
-
             snake.move();
             isEating = isEating();
 
             if (isEating) {
                 feedAte++;
-                points += feedAte * maxDistance;
+                points += feedAte * (maxDistance + lifeTime);
                 snake.eat();
                 spawnFeed();
                 lifeTime = maxLifeTime;
-                rightCounter = leftCounter = 0;
+                minorDistance = maxDistance;
             }
             Thread.sleep(sleep);
         } while (true);
@@ -90,8 +88,7 @@ public class Game implements Runnable {
         if(getPoint(head.getX(), head.getY()) == LocationInfo.INVALID)
             points = (int) (points * 0.75);
 
-        var distanceToFeed = calculateDistanceToFeed();
-        points += maxDistance - distanceToFeed;
+        points += maxDistance - minorDistance + maxDistance - calculateDistanceToFeed();
         running = false;
         onGameEnded.onGameEnded(this, neuralNetwork);
     }
@@ -144,13 +141,18 @@ public class Game implements Runnable {
                     (double) sensorList.get(i).calculateDistance()
             );
 
+        var distanceToFeed = calculateDistanceToFeed();
+        if(distanceToFeed < minorDistance)
+            minorDistance = distanceToFeed;
+
         var head = snake.getHead();
-        input.put("feedX", (double) (feed.getX() - head.getX()));
-        input.put("feedY", (double) (feed.getY() - head.getY()));
-        input.put("leftCounter", (double) leftCounter);
-        input.put("rightCounter", (double) rightCounter);
-        input.put("currentDirectionX", (double) snake.getCurrentDirection().getMovementX());
-        input.put("currentDirectionY", (double) snake.getCurrentDirection().getMovementY());
+        input.put("feedXDistance", (double) (feed.getX() - head.getX()) * snake.getCurrentDirection().getMovementX());
+        input.put("feedYDistance", (double) (feed.getY() - head.getY()) * snake.getCurrentDirection().getMovementY());
+        input.put("size", (double) snake.getSensorList().size());
+        input.put("leftCounter", Math.floor(leftCounter / 4.0));
+        input.put("rightCounter", Math.floor(rightCounter / 4.0));
+//        input.put("currentDirectionX", (double) );
+//        input.put("currentDirectionY", (double) );
 
         var response = neuralNetwork.calculate(input);
         var left = response.get("turnLeft") > 0;

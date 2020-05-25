@@ -42,6 +42,6 @@ public class Sensor {
             distance++;
         }
 
-        return distance;
+        return distance > 1 ? 0 : 1;
     }
 }
