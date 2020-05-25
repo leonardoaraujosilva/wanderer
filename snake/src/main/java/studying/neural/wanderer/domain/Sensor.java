@@ -42,6 +42,6 @@ public class Sensor {
             distance++;
         }
 
-        return distance > 1 ? 0 : 1;
+        return distance; //game.getPoint(current.getX(), current.getY()) == LocationInfo.INVALID? game.getWidth() : distance;
     }
 }

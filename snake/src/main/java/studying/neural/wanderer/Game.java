@@ -148,9 +148,9 @@ public class Game implements Runnable {
         var head = snake.getHead();
         input.put("feedXDistance", (double) (feed.getX() - head.getX()) * snake.getCurrentDirection().getMovementX());
         input.put("feedYDistance", (double) (feed.getY() - head.getY()) * snake.getCurrentDirection().getMovementY());
-        input.put("size", (double) snake.getSensorList().size());
-        input.put("leftCounter", Math.floor(leftCounter / 4.0));
-        input.put("rightCounter", Math.floor(rightCounter / 4.0));
+//        input.put("size", (double) snake.getSensorList().size());
+//        input.put("leftCounter", Math.floor(leftCounter / 4.0));
+//        input.put("rightCounter", Math.floor(rightCounter / 4.0));
 //        input.put("currentDirectionX", (double) );
 //        input.put("currentDirectionY", (double) );
 

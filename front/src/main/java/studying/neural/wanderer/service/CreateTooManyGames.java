@@ -42,7 +42,7 @@ public class CreateTooManyGames implements OnGameEnded {
     private int betterPoints = 0;
     private int bestFeedAte = 0;
     private NeuralNetwork betterNetwork = null;
-    private double range = 50.0;
+    private double range = 300.0;
 
     private Map<Integer, Integer> counter;
 
